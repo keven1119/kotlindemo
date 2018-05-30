@@ -11,12 +11,12 @@ def getJavaVersion() {
 
 android {
     signingConfigs {
-        release {
-            keyAlias 'java2kotlin'
-            keyPassword '123456'
-            storeFile file('/Users/x/Documents/keven/keystore/java2kotlindemo/java2kotlin')
-            storePassword '123456'
-        }
+//        release {
+//            keyAlias 'java2kotlin'
+//            keyPassword '123456'
+//            storeFile file('/Users/x/Documents/keven/keystore/java2kotlindemo/java2kotlin')
+//            storePassword '123456'
+//        }
     }
 
     // Tinker推荐模式
@@ -35,8 +35,8 @@ android {
         applicationId "com.keven.kotlin"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode 20
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         // 使用multiDex库
@@ -48,15 +48,22 @@ android {
                 includeCompileClasspath true
             }
         }
+
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi' //, 'x86', 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
     }
     buildTypes {
         buildTypes {
             debug {
-                signingConfig signingConfigs.release
+//                signingConfig signingConfigs.release
             }
             release {
-                signingConfig signingConfigs.release
+//                signingConfig signingConfigs.release
                 minifyEnabled false
+                multiDexKeepProguard file('multidexKeep.pro')
+                multiDexKeepProguard file('tinkerMultidexKeep.pro')
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
         }
@@ -84,7 +91,13 @@ dependencies {
     annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
     compileOnly("com.tinkerpatch.tinker:tinker-android-anno:${TINKER_VERSION}") { changing = true }
     implementation("com.tinkerpatch.sdk:tinkerpatch-android-sdk:${TINKERPATCH_VERSION}") { changing = true }
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+
+    implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
+    implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+
+    compile files('libs/TalkingdataAnalytics.jar')
 }
 
 apply from: 'tinkerpatch.gradle'

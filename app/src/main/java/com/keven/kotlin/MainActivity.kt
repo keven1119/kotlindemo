@@ -10,8 +10,10 @@ import android.util.Log
 import android.view.View
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.TextView
 import com.keven.kotlin.R.id.textview_home
+import com.tencent.bugly.crashreport.CrashReport
 
 import com.tencent.tinker.lib.tinker.TinkerInstaller
 import com.tinkerpatch.sdk.TinkerPatch
@@ -38,7 +40,18 @@ class MainActivity : AppCompatActivity() {
 
 //                textview.setText("这是没有bug版本");
         val textView = findViewById<TextView>(R.id.textview_home)
+        val button = findViewById<Button>(R.id.button_exception)
+
         textView.text = "kotlin 补丁成功"
+
+        button.setOnClickListener({v ->
+            try {
+                throw NullPointerException()
+            }catch(e:Throwable){
+                CrashReport.postCatchedException(e)
+            }})
+
+
 
     }
 

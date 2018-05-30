@@ -5,12 +5,15 @@ import android.content.Context;
 import android.support.multidex.MultiDex;
 import android.util.Log;
 
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.tinker.lib.listener.DefaultPatchListener;
 import com.tencent.tinker.lib.patch.UpgradePatch;
 import com.tencent.tinker.lib.reporter.DefaultLoadReporter;
 import com.tencent.tinker.lib.reporter.DefaultPatchReporter;
 import com.tencent.tinker.lib.service.PatchResult;
 import com.tencent.tinker.loader.app.ApplicationLike;
+import com.tendcloud.tenddata.TCAgent;
 import com.tinkerpatch.sdk.TinkerPatch;
 import com.tinkerpatch.sdk.loader.TinkerPatchApplicationLike;
 import com.tinkerpatch.sdk.server.callback.ConfigRequestCallback;
@@ -20,6 +23,8 @@ import com.tinkerpatch.sdk.tinker.callback.ResultCallBack;
 import com.tinkerpatch.sdk.tinker.service.TinkerServerResultService;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class SampleApplication extends Application {
     private static final String TAG = "Tinker.SampleApp";
@@ -45,6 +50,65 @@ public class SampleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         initTinkerPatch();
+
+        initBugly();
+
+        initTalkingData();
+
+    }
+
+    private void initTalkingData(){
+
+        TCAgent.LOG_ON=true;
+        // App ID: 在TalkingData创建应用后，进入数据报表页中，在“系统设置”-“编辑应用”页面里查看App ID。
+        // 渠道 ID: 是渠道标识符，可通过不同渠道单独追踪数据。
+        TCAgent.init(this, "8AAE3C1F5F1C420DABA5E9944A6DFC59", "default");
+        // 如果已经在AndroidManifest.xml配置了App ID和渠道ID，调用TCAgent.init(this)即可；或与AndroidManifest.xml中的对应参数保持一致。
+        TCAgent.setReportUncaughtExceptions(true);
+    }
+
+
+    /**
+     * 初始化bugly
+     */
+    private void initBugly() {
+
+        CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(this);
+
+        strategy.setAppVersion(BuildConfig.VERSION_NAME);
+        strategy.setAppPackageName(BuildConfig.APPLICATION_ID);
+
+        strategy.setAppReportDelay(0);
+//        CrashReport.setUserSceneTag(this, 9527);
+
+//        CrashReport.putUserData(this, "userkey", "9999");
+//        CrashReport.setUserId("1111");
+        CrashReport.setIsDevelopmentDevice(this, true);
+
+        strategy.setCrashHandleCallback(new CrashReport.CrashHandleCallback() {
+            public Map<String, String> onCrashHandleStart(int crashType, String errorType,
+                                                          String errorMessage, String errorStack) {
+                LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+//                map.put("userId", "8888");
+                return map;
+            }
+
+            @Override
+            public byte[] onCrashHandleStart2GetExtraDatas(int crashType, String errorType,
+                                                           String errorMessage, String errorStack) {
+                try {
+                    return "Extra data.".getBytes("UTF-8");
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+
+        });
+
+        CrashReport.initCrashReport(this, "e6678b9880", true, strategy);
+        CrashReport.setUserId("1111");
+//        CrashReport.putUserData(this, "userkey", "9999");
+
     }
 
     /**

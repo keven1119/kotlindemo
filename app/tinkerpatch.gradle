@@ -42,14 +42,14 @@ tinkerpatchSupport {
     def pathPrefix = "${bakPath}/${baseInfo}/${variantName}/"
     def name = "${project.name}-${variantName}"
 
-//    baseApkFile = "${pathPrefix}" +"${name}.apk"
-//    System.out.println("baseApkFile ==>" + baseApkFile)
-//    baseProguardMappingFile = "${pathPrefix}/${name}-mapping.txt"
-//    baseResourceRFile = "${pathPrefix}/${name}-R.txt"
-    baseApkFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release.apk"
+    baseApkFile = "${pathPrefix}" +"${name}.apk"
     System.out.println("baseApkFile ==>" + baseApkFile)
-    baseProguardMappingFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release-mapping.txt"
-    baseResourceRFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release-R.txt"
+    baseProguardMappingFile = "${pathPrefix}/${name}-mapping.txt"
+    baseResourceRFile = "${pathPrefix}/${name}-R.txt"
+//    baseApkFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release.apk"
+//    System.out.println("baseApkFile ==>" + baseApkFile)
+//    baseProguardMappingFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release-mapping.txt"
+//    baseResourceRFile = "/Users/x/Documents/keven/workspace/tinker/oldapk/1.0.0/app-release-R.txt"
 
     /**
      *  若有编译多flavors需求, 可以参照： https://github.com/TinkerPatch/tinkerpatch-flavors-sample
