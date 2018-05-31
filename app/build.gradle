@@ -2,7 +2,9 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 //apply tinker插件
 apply plugin: 'com.tencent.tinker.patch'
-//apply from:'tinkerpatch.gradle
+//打包插件
+apply plugin: 'packer'
+
 
 // 指定JDK版本
 def getJavaVersion() {
@@ -11,12 +13,17 @@ def getJavaVersion() {
 
 android {
     signingConfigs {
-//        release {
+        release {
 //            keyAlias 'java2kotlin'
 //            keyPassword '123456'
 //            storeFile file('/Users/x/Documents/keven/keystore/java2kotlindemo/java2kotlin')
 //            storePassword '123456'
-//        }
+            v2SigningEnabled false
+
+        }
+        debug{
+            v2SigningEnabled false
+        }
     }
 
     // Tinker推荐模式
@@ -30,7 +37,7 @@ android {
     }
 
 
-    compileSdkVersion 27
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.keven.kotlin"
         minSdkVersion 21
@@ -58,6 +65,7 @@ android {
         buildTypes {
             debug {
 //                signingConfig signingConfigs.release
+
             }
             release {
 //                signingConfig signingConfigs.release
@@ -65,6 +73,7 @@ android {
                 multiDexKeepProguard file('multidexKeep.pro')
                 multiDexKeepProguard file('tinkerMultidexKeep.pro')
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
             }
         }
     }
@@ -97,7 +106,10 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:latest.release' //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
     implementation 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
 
-    compile files('libs/TalkingdataAnalytics.jar')
+    implementation files('libs/TalkingdataAnalytics.jar')
+
+    implementation 'com.mcxiaoke.gradle:packer-helper:1.0.9'
+
 }
 
 apply from: 'tinkerpatch.gradle'
